@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PAYME - Smart Payment Splitting</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -34,97 +34,116 @@
         .btn-glow:hover {
             box-shadow: 0 0 20px rgba(0, 180, 216, 0.5);
         }
+
+        /* Mobile-specific adjustments */
+        @media (max-width: 640px) {
+            .mobile-stack {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+            
+            .mobile-text-lg {
+                font-size: 1.5rem !important;
+            }
+            
+            .mobile-p-4 {
+                padding: 1rem !important;
+            }
+            
+            .mobile-w-full {
+                width: 100% !important;
+            }
+        }
     </style>
 </head>
-<body class="p-8">
-    <header class="mb-16 text-center">
-        <h1 class="text-5xl font-bold mb-4 gradient-text">PAYME</h1>
-        <p class="text-xl text-gray-300">Split payments. Track debts. Get paid.</p>
+<body class="p-4 sm:p-8">
+    <header class="mb-8 sm:mb-16 text-center">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4 gradient-text">PAYME</h1>
+        <p class="text-sm sm:text-xl text-gray-300">Split payments. Track debts. Get paid.</p>
     </header>
 
-    <main class="max-w-6xl mx-auto space-y-12">
+    <main class="max-w-6xl mx-auto space-y-8">
         <!-- Core Features Section -->
-        <section class="card-glass p-8">
-            <h2 class="text-3xl font-semibold mb-6 gradient-text">Core Features</h2>
+        <section class="card-glass p-4 sm:p-8">
+            <h2 class="text-2xl sm:text-3xl font-semibold mb-4 gradient-text">Core Features</h2>
             
             <!-- Create Split Card -->
-            <div class="mb-8">
-                <h3 class="text-xl font-medium mb-4">Create New Split</h3>
+            <div class="mb-6">
+                <h3 class="text-lg sm:text-xl font-medium mb-4">Create New Split</h3>
                 <form class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" placeholder="Bill Title" class="w-full p-3 bg-gray-800 rounded-lg">
-                        <input type="text" placeholder="Your Name" class="w-full p-3 bg-gray-800 rounded-lg">
+                    <div class="grid grid-cols-1 gap-4">
+                        <input type="text" placeholder="Bill Title" class="w-full p-3 bg-gray-800 rounded-lg text-sm sm:text-base">
+                        <input type="text" placeholder="Your Name" class="w-full p-3 bg-gray-800 rounded-lg text-sm sm:text-base">
+                        <input type="email" placeholder="Your Email/Phone" class="w-full p-3 bg-gray-800 rounded-lg text-sm sm:text-base">
                     </div>
-                    <input type="email" placeholder="Your Email/Phone" class="w-full p-3 bg-gray-800 rounded-lg">
                     <div id="people-list" class="space-y-2">
-                        <div class="flex gap-2">
-                            <input type="text" placeholder="Person Name" class="flex-1 p-3 bg-gray-800 rounded-lg">
-                            <input type="number" placeholder="Amount" class="w-24 p-3 bg-gray-800 rounded-lg">
+                        <div class="mobile-stack flex gap-2">
+                            <input type="text" placeholder="Person Name" class="flex-1 p-3 bg-gray-800 rounded-lg text-sm sm:text-base">
+                            <input type="number" placeholder="Amount" class="w-24 p-3 bg-gray-800 rounded-lg text-sm sm:text-base">
                         </div>
                     </div>
-                    <button type="button" onclick="addPersonField()" class="btn-glow px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                    <button type="button" onclick="addPersonField()" class="btn-glow px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition text-sm sm:text-base mobile-w-full">
                         <i class="fas fa-plus mr-2"></i>Add Person
                     </button>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="date" class="w-full p-3 bg-gray-800 rounded-lg">
-                        <textarea placeholder="Custom Message" class="w-full p-3 bg-gray-800 rounded-lg"></textarea>
+                    <div class="grid grid-cols-1 gap-4">
+                        <input type="date" class="w-full p-3 bg-gray-800 rounded-lg text-sm sm:text-base">
+                        <textarea placeholder="Custom Message" class="w-full p-3 bg-gray-800 rounded-lg text-sm sm:text-base"></textarea>
                     </div>
-                    <button class="btn-glow w-full py-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                    <button class="btn-glow w-full py-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition text-sm sm:text-base">
                         Create Split
                     </button>
                 </form>
             </div>
 
             <!-- Split Preview -->
-            <div class="mt-12">
-                <h3 class="text-xl font-medium mb-4">Split Preview</h3>
-                <div class="card-glass p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h4 class="font-medium">Split Link:</h4>
+            <div class="mt-8">
+                <h3 class="text-lg sm:text-xl font-medium mb-4">Split Preview</h3>
+                <div class="card-glass p-4 sm:p-6">
+                    <div class="mobile-stack flex items-center justify-between mb-4 gap-4">
+                        <div class="flex-1">
+                            <h4 class="font-medium text-sm sm:text-base">Split Link:</h4>
                             <div class="flex items-center gap-2 mt-2">
-                                <span class="bg-gray-800 px-3 py-1 rounded">payme.app/split/abc123</span>
-                                <button onclick="copyLink()" class="btn-glow px-3 py-1 bg-green-600 rounded">
+                                <span class="bg-gray-800 px-3 py-1 rounded text-xs sm:text-sm break-all">payme.app/split/abc123</span>
+                                <button onclick="copyLink()" class="btn-glow px-3 py-1 bg-green-600 rounded text-sm">
                                     <i class="fas fa-copy"></i>
                                 </button>
                             </div>
                         </div>
-                        <button class="btn-glow px-6 py-2 bg-purple-600 rounded-lg">
+                        <button class="btn-glow px-4 py-2 bg-purple-600 rounded-lg text-sm sm:text-base mobile-w-full">
                             <i class="fab fa-whatsapp mr-2"></i>Share
                         </button>
                     </div>
                     <div class="space-y-3">
-                        <div class="flex justify-between items-center bg-gray-800 p-3 rounded">
-                            <span>John Doe</span>
+                        <div class="mobile-stack flex justify-between items-center bg-gray-800 p-3 rounded">
+                            <span class="text-sm sm:text-base">John Doe</span>
                             <div class="flex items-center gap-4">
-                                <span>$45.00</span>
-                                <button class="btn-glow px-4 py-1 bg-green-600 rounded">Mark Paid</button>
+                                <span class="text-sm sm:text-base">$45.00</span>
+                                <button class="btn-glow px-4 py-1 bg-green-600 rounded text-sm sm:text-base">Mark Paid</button>
                             </div>
                         </div>
-                        <!-- Repeat for other people -->
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Dashboard Section -->
-        <section class="card-glass p-8">
-            <h2 class="text-3xl font-semibold mb-6 gradient-text">Creator Dashboard</h2>
+        <section class="card-glass p-4 sm:p-8">
+            <h2 class="text-2xl sm:text-3xl font-semibold mb-4 gradient-text">Creator Dashboard</h2>
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="w-full min-w-[500px]">
                     <thead>
                         <tr class="text-left border-b border-gray-700">
-                            <th class="pb-3">Split Title</th>
-                            <th class="pb-3">Due Date</th>
-                            <th class="pb-3">Progress</th>
-                            <th class="pb-3">Actions</th>
+                            <th class="pb-3 text-sm sm:text-base">Split Title</th>
+                            <th class="pb-3 text-sm sm:text-base">Due Date</th>
+                            <th class="pb-3 text-sm sm:text-base">Progress</th>
+                            <th class="pb-3 text-sm sm:text-base">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="border-b border-gray-700">
-                            <td class="py-4">Dinner Party</td>
-                            <td class="py-4">2023-08-15</td>
-                            <td class="py-4">
+                            <td class="py-4 text-sm sm:text-base">Dinner Party</td>
+                            <td class="py-4 text-sm sm:text-base">2023-08-15</td>
+                            <td class="py-4 text-sm sm:text-base">
                                 <div class="flex items-center gap-2">
                                     <div class="w-24 h-2 bg-gray-800 rounded">
                                         <div class="h-full bg-blue-600 rounded w-3/4"></div>
@@ -133,7 +152,7 @@
                                 </div>
                             </td>
                             <td class="py-4">
-                                <button class="btn-glow px-3 py-1 bg-red-600 rounded">
+                                <button class="btn-glow px-3 py-1 bg-red-600 rounded text-sm sm:text-base">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -147,10 +166,10 @@
     <script>
         function addPersonField() {
             const div = document.createElement('div');
-            div.className = 'flex gap-2';
+            div.className = 'mobile-stack flex gap-2';
             div.innerHTML = `
-                <input type="text" placeholder="Person Name" class="flex-1 p-3 bg-gray-800 rounded-lg">
-                <input type="number" placeholder="Amount" class="w-24 p-3 bg-gray-800 rounded-lg">
+                <input type="text" placeholder="Person Name" class="flex-1 p-3 bg-gray-800 rounded-lg text-sm sm:text-base">
+                <input type="number" placeholder="Amount" class="w-24 p-3 bg-gray-800 rounded-lg text-sm sm:text-base">
             `;
             document.getElementById('people-list').appendChild(div);
         }
