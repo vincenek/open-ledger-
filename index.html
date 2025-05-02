@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAYME - Smart Payment Splitting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, #00b4d8, #90e0ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .card-glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-glow:hover {
+            box-shadow: 0 0 20px rgba(0, 180, 216, 0.5);
+        }
+    </style>
+</head>
+<body class="p-8">
+    <header class="mb-16 text-center">
+        <h1 class="text-5xl font-bold mb-4 gradient-text">PAYME</h1>
+        <p class="text-xl text-gray-300">Split payments. Track debts. Get paid.</p>
+    </header>
+
+    <main class="max-w-6xl mx-auto space-y-12">
+        <!-- Core Features Section -->
+        <section class="card-glass p-8">
+            <h2 class="text-3xl font-semibold mb-6 gradient-text">Core Features</h2>
+            
+            <!-- Create Split Card -->
+            <div class="mb-8">
+                <h3 class="text-xl font-medium mb-4">Create New Split</h3>
+                <form class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" placeholder="Bill Title" class="w-full p-3 bg-gray-800 rounded-lg">
+                        <input type="text" placeholder="Your Name" class="w-full p-3 bg-gray-800 rounded-lg">
+                    </div>
+                    <input type="email" placeholder="Your Email/Phone" class="w-full p-3 bg-gray-800 rounded-lg">
+                    <div id="people-list" class="space-y-2">
+                        <div class="flex gap-2">
+                            <input type="text" placeholder="Person Name" class="flex-1 p-3 bg-gray-800 rounded-lg">
+                            <input type="number" placeholder="Amount" class="w-24 p-3 bg-gray-800 rounded-lg">
+                        </div>
+                    </div>
+                    <button type="button" onclick="addPersonField()" class="btn-glow px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-plus mr-2"></i>Add Person
+                    </button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="date" class="w-full p-3 bg-gray-800 rounded-lg">
+                        <textarea placeholder="Custom Message" class="w-full p-3 bg-gray-800 rounded-lg"></textarea>
+                    </div>
+                    <button class="btn-glow w-full py-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                        Create Split
+                    </button>
+                </form>
+            </div>
+
+            <!-- Split Preview -->
+            <div class="mt-12">
+                <h3 class="text-xl font-medium mb-4">Split Preview</h3>
+                <div class="card-glass p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h4 class="font-medium">Split Link:</h4>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="bg-gray-800 px-3 py-1 rounded">payme.app/split/abc123</span>
+                                <button onclick="copyLink()" class="btn-glow px-3 py-1 bg-green-600 rounded">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn-glow px-6 py-2 bg-purple-600 rounded-lg">
+                            <i class="fab fa-whatsapp mr-2"></i>Share
+                        </button>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center bg-gray-800 p-3 rounded">
+                            <span>John Doe</span>
+                            <div class="flex items-center gap-4">
+                                <span>$45.00</span>
+                                <button class="btn-glow px-4 py-1 bg-green-600 rounded">Mark Paid</button>
+                            </div>
+                        </div>
+                        <!-- Repeat for other people -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section class="card-glass p-8">
+            <h2 class="text-3xl font-semibold mb-6 gradient-text">Creator Dashboard</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-left border-b border-gray-700">
+                            <th class="pb-3">Split Title</th>
+                            <th class="pb-3">Due Date</th>
+                            <th class="pb-3">Progress</th>
+                            <th class="pb-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-700">
+                            <td class="py-4">Dinner Party</td>
+                            <td class="py-4">2023-08-15</td>
+                            <td class="py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-2 bg-gray-800 rounded">
+                                        <div class="h-full bg-blue-600 rounded w-3/4"></div>
+                                    </div>
+                                    <span>3/4 paid</span>
+                                </div>
+                            </td>
+                            <td class="py-4">
+                                <button class="btn-glow px-3 py-1 bg-red-600 rounded">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function addPersonField() {
+            const div = document.createElement('div');
+            div.className = 'flex gap-2';
+            div.innerHTML = `
+                <input type="text" placeholder="Person Name" class="flex-1 p-3 bg-gray-800 rounded-lg">
+                <input type="number" placeholder="Amount" class="w-24 p-3 bg-gray-800 rounded-lg">
+            `;
+            document.getElementById('people-list').appendChild(div);
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText('payme.app/split/abc123');
+            alert('Link copied to clipboard!');
+        }
+
+        // Initialize animations
+        document.querySelectorAll('.card-glass').forEach(card => {
+            card.style.transform = 'translateY(20px)';
+            card.style.opacity = '0';
+            card.animate([
+                { transform: 'translateY(20px)', opacity: 0 },
+                { transform: 'translateY(0)', opacity: 1 }
+            ], { duration: 600, fill: 'forwards' });
+        });
+    </script>
+</body>
+</html>
