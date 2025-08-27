@@ -8,20 +8,16 @@
   "background_color": "#ffffff",
   "icons": [
     {
-      "src": "https://i.postimg.cc/cCnt1RRn/favicon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png"
-    },
-    {
-      "src": "https://i.postimg.cc/sX8ZR6hz/web-app-manifest-192x192.png",
+      "src": "https://i.postimg.cc/RFhRnC8R/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://i.postimg.cc/W3tJCLtS/web-app-manifest-512x512.png",
+      "src": "https://i.postimg.cc/hv71pyKQ/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ]
 }
+
 
