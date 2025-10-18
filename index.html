@@ -4,22 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OpenLedger - Professional Accounting Software</title>
-    <!-- Manifest -->
+    
+    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="OpenLedger">
+    
     <!-- iOS Support -->
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <meta name="apple-mobile-web-app-status-bar" content="#2563eb">
 
     <!-- Theme Color -->
     <meta name="theme-color" content="#2563eb">
+    
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-   
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --primary: #4361ee;
@@ -38,6 +44,12 @@
             --border-radius: 12px;
             --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
+            
+            /* NEW: Glassmorphism variables */
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --glass-blur: blur(10px);
         }
 
         .dark-mode {
@@ -46,6 +58,10 @@
             --text-primary: #e9ecef;
             --text-secondary: #a0aec0;
             --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            
+            /* NEW: Dark mode glassmorphism */
+            --glass-bg: rgba(36, 49, 69, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         * {
@@ -63,6 +79,26 @@
             display: flex;
             flex-direction: column;
             transition: var(--transition);
+            
+            /* NEW: Dynamic background based on financial health */
+            background: linear-gradient(135deg, var(--bg-color) 0%, #f0f4f8 100%);
+        }
+
+        /* NEW: Financial health background states */
+        body.positive-health {
+            background: linear-gradient(135deg, var(--bg-color) 0%, rgba(46, 204, 113, 0.1) 100%);
+        }
+
+        body.negative-health {
+            background: linear-gradient(135deg, var(--bg-color) 0%, rgba(231, 76, 60, 0.1) 100%);
+        }
+
+        .dark-mode.positive-health {
+            background: linear-gradient(135deg, var(--bg-color) 0%, rgba(46, 204, 113, 0.15) 100%);
+        }
+
+        .dark-mode.negative-health {
+            background: linear-gradient(135deg, var(--bg-color) 0%, rgba(231, 76, 60, 0.15) 100%);
         }
 
         .container {
@@ -71,6 +107,24 @@
             margin: 0 auto;
             padding: 0 20px;
             flex: 1;
+        }
+
+        /* NEW: Glassmorphism effect for cards and panels */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        /* Apply glass effect to existing cards */
+        .card, .stat-card, .quick-action-btn, .chart-container {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
         }
 
         /* Header Styles */
@@ -83,6 +137,12 @@
             top: 0;
             z-index: 100;
             transition: var(--transition);
+            
+            /* NEW: Glass header */
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--glass-border);
         }
 
         .header-content {
@@ -130,6 +190,12 @@
             top: 72px;
             z-index: 99;
             transition: var(--transition);
+            
+            /* NEW: Glass tabs */
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--glass-border);
         }
 
         .tab {
@@ -180,6 +246,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            
+            /* NEW: Glass banner */
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.9) 0%, rgba(58, 86, 212, 0.9) 100%);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
         }
 
         .welcome-content h2 {
@@ -284,13 +355,157 @@
             box-shadow: var(--box-shadow);
             margin-bottom: 2rem;
             position: relative;
-            height: 300px; /* Added fixed height for the chart */
+            height: 300px;
         }
 
         .chart-title {
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
             font-weight: 600;
+        }
+
+        /* NEW: FlowView™ Styles */
+        .flow-view-container {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .flow-view-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .flow-node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .flow-node:hover {
+            transform: scale(1.1);
+        }
+
+        .flow-connection {
+            stroke: var(--primary);
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        /* NEW: Ledger Health Meter Styles */
+        .health-meter-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .health-meter {
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+
+        .health-meter-circle {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .health-meter-bg {
+            fill: none;
+            stroke: #e0e0e0;
+            stroke-width: 8;
+        }
+
+        .health-meter-progress {
+            fill: none;
+            stroke: var(--success);
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .health-meter-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .health-meter-label {
+            text-align: center;
+            margin-top: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        /* NEW: AI Narrative Insight Styles */
+        .ai-narrative {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .ai-narrative-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .ai-narrative-icon {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .ai-narrative-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        /* NEW: Ghost Transactions Styles */
+        .ghost-transaction {
+            opacity: 0.3;
+            background: rgba(0, 0, 0, 0.05);
+            transition: opacity 0.3s ease;
+        }
+
+        .ghost-transaction:hover {
+            opacity: 0.6;
+        }
+
+        .ghost-badge {
+            background: var(--secondary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            margin-left: 8px;
+        }
+
+        /* NEW: Transaction Hash Styles */
+        .transaction-hash {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            word-break: break-all;
+            margin-top: 5px;
+        }
+
+        .hash-label {
+            font-weight: bold;
+            color: var(--primary);
         }
 
         /* Card Styles */
@@ -455,6 +670,12 @@
             overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             animation: slideIn 0.3s ease;
+            
+            /* NEW: Glass modal */
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
         }
 
         @keyframes slideIn {
@@ -526,6 +747,12 @@
             text-align: center;
             box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
             transition: var(--transition);
+            
+            /* NEW: Glass footer */
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-top: 1px solid var(--glass-border);
         }
 
         .footer-content {
@@ -568,6 +795,16 @@
             .footer-content {
                 flex-direction: column;
                 gap: 1rem;
+            }
+            
+            /* NEW: Responsive FlowView */
+            .flow-view-container {
+                height: 200px;
+            }
+            
+            /* NEW: Responsive AI Narrative */
+            .ai-narrative-content {
+                font-size: 0.9rem;
             }
         }
 
@@ -718,6 +955,38 @@
             border-radius: var(--border-radius);
             margin-bottom: 1.5rem;
         }
+        
+        /* NEW: Animated counter styles */
+        .counter-value {
+            transition: all 0.5s ease-out;
+        }
+        
+        /* NEW: Accessibility improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        /* NEW: Focus styles for accessibility */
+        button:focus-visible, 
+        input:focus-visible, 
+        select:focus-visible, 
+        textarea:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        
+        .tab:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: -2px;
+        }
     </style>
 </head>
 <body>
@@ -732,7 +1001,7 @@
                 </div>
                 <div id="company-name">Company Name</div>
                 <div class="header-actions">
-                    <button class="theme-toggle" id="theme-toggle">
+                    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
                         <i class="fas fa-moon"></i>
                     </button>
                     <button id="help-btn">
@@ -745,23 +1014,34 @@
     
     <div class="container">
         <div class="nav-tabs">
-            <div class="tab active" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i>Dashboard</div>
-            <div class="tab" data-tab="journal"><i class="fas fa-book"></i>Journal</div>
-            <div class="tab" data-tab="ledger"><i class="fas fa-file-invoice-dollar"></i>Ledger</div>
-            <div class="tab" data-tab="trial-balance"><i class="fas fa-balance-scale"></i>Trial Balance</div>
-            <div class="tab" data-tab="reports"><i class="fas fa-chart-bar"></i>Reports</div>
-            <div class="tab" data-tab="accounts"><i class="fas fa-chart-pie"></i>Chart of Accounts</div>
-            <div class="tab" data-tab="settings"><i class="fas fa-cog"></i>Settings</div>
+            <div class="tab active" data-tab="dashboard" role="tab" aria-selected="true" aria-controls="dashboard"><i class="fas fa-tachometer-alt"></i>Dashboard</div>
+            <div class="tab" data-tab="journal" role="tab" aria-selected="false" aria-controls="journal"><i class="fas fa-book"></i>Journal</div>
+            <div class="tab" data-tab="ledger" role="tab" aria-selected="false" aria-controls="ledger"><i class="fas fa-file-invoice-dollar"></i>Ledger</div>
+            <div class="tab" data-tab="trial-balance" role="tab" aria-selected="false" aria-controls="trial-balance"><i class="fas fa-balance-scale"></i>Trial Balance</div>
+            <div class="tab" data-tab="reports" role="tab" aria-selected="false" aria-controls="reports"><i class="fas fa-chart-bar"></i>Reports</div>
+            <div class="tab" data-tab="accounts" role="tab" aria-selected="false" aria-controls="accounts"><i class="fas fa-chart-pie"></i>Chart of Accounts</div>
+            <div class="tab" data-tab="settings" role="tab" aria-selected="false" aria-controls="settings"><i class="fas fa-cog"></i>Settings</div>
         </div>
         
         <!-- Dashboard Tab -->
-        <div id="dashboard" class="tab-content active">
+        <div id="dashboard" class="tab-content active" role="tabpanel" aria-labelledby="dashboard-tab">
             <div class="welcome-banner">
                 <div class="welcome-content">
                     <h2>Welcome to OpenLedger!</h2>
                     <p>Manage your finances with our easy-to-use accounting software</p>
                 </div>
                 <button id="quick-add-btn"><i class="fas fa-plus"></i> New Transaction</button>
+            </div>
+            
+            <!-- NEW: AI Narrative Insight -->
+            <div class="ai-narrative glass-card" id="ai-narrative-box">
+                <div class="ai-narrative-header">
+                    <i class="fas fa-robot ai-narrative-icon"></i>
+                    <h3>Financial Insight</h3>
+                </div>
+                <div class="ai-narrative-content" id="ai-narrative-text">
+                    Analyzing your financial data...
+                </div>
             </div>
             
             <div class="quick-actions">
@@ -783,6 +1063,26 @@
                 </div>
             </div>
             
+            <!-- NEW: Ledger Health Meter -->
+            <div class="card">
+                <div class="card-header">
+                    <span>Ledger Health</span>
+                </div>
+                <div class="card-body">
+                    <div class="health-meter-container">
+                        <div class="health-meter">
+                            <svg viewBox="0 0 120 120" class="health-meter-circle">
+                                <circle cx="60" cy="60" r="54" class="health-meter-bg"></circle>
+                                <circle cx="60" cy="60" r="54" class="health-meter-progress" id="health-meter-progress" 
+                                        stroke-dasharray="339.292" stroke-dashoffset="339.292"></circle>
+                            </svg>
+                            <div class="health-meter-value" id="health-meter-value">0%</div>
+                        </div>
+                    </div>
+                    <div class="health-meter-label" id="health-meter-label">Calculating ledger health...</div>
+                </div>
+            </div>
+            
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-header">
@@ -791,7 +1091,7 @@
                             <i class="fas fa-wallet"></i>
                         </div>
                     </div>
-                    <div class="stat-value" id="total-assets">$0.00</div>
+                    <div class="stat-value counter-value" id="total-assets">$0.00</div>
                     <div class="stat-label">Current value of all assets</div>
                 </div>
                 <div class="stat-card">
@@ -801,7 +1101,7 @@
                             <i class="fas fa-hand-holding-usd"></i>
                         </div>
                     </div>
-                    <div class="stat-value" id="total-liabilities">$0.00</div>
+                    <div class="stat-value counter-value" id="total-liabilities">$0.00</div>
                     <div class="stat-label">Current value of all liabilities</div>
                 </div>
                 <div class="stat-card">
@@ -811,7 +1111,7 @@
                             <i class="fas fa-chart-line"></i>
                         </div>
                     </div>
-                    <div class="stat-value" id="total-equity">$0.00</div>
+                    <div class="stat-value counter-value" id="total-equity">$0.00</div>
                     <div class="stat-label">Owner's equity value</div>
                 </div>
                 <div class="stat-card">
@@ -821,9 +1121,22 @@
                             <i class="fas fa-money-bill-wave"></i>
                         </div>
                     </div>
-                    <div class="stat-value" id="net-income">$0.00</div>
+                    <div class="stat-value counter-value" id="net-income">$0.00</div>
                     <div class="stat-label">Revenue minus expenses</div>
                 </div>
+            </div>
+            
+            <!-- NEW: FlowView™ Money Flow Visualization -->
+            <div class="flow-view-container glass-card">
+                <div class="chart-title">Money Flow Map <small>(FlowView™)</small></div>
+                <svg class="flow-view-svg" id="flow-view-svg">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#4361ee" />
+                        </marker>
+                    </defs>
+                    <!-- Flow connections will be dynamically added here -->
+                </svg>
             </div>
             
             <div class="chart-container">
@@ -845,11 +1158,13 @@
                                 <th>Account</th>
                                 <th>Debit</th>
                                 <th>Credit</th>
+                                <!-- NEW: Transaction Hash Column -->
+                                <th>Integrity</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="empty-state-row">
-                                <td colspan="5" class="empty-state">
+                                <td colspan="6" class="empty-state">
                                     <i class="fas fa-receipt"></i>
                                     <p>No transactions yet</p>
                                 </td>
@@ -872,12 +1187,12 @@
         </div>
         
         <!-- Journal Tab -->
-        <div id="journal" class="tab-content">
+        <div id="journal" class="tab-content" role="tabpanel" aria-labelledby="journal-tab">
             <h2>Journal Entries</h2>
             <button id="add-transaction-btn" style="margin-bottom: 1.5rem;"><i class="fas fa-plus"></i>Add New Transaction</button>
             
             <div class="search-box">
-                <input type="text" id="journal-search" placeholder="Search journal entries...">
+                <input type="text" id="journal-search" placeholder="Search journal entries..." aria-label="Search journal entries">
                 <button id="journal-search-btn"><i class="fas fa-search"></i></button>
             </div>
             
@@ -920,12 +1235,14 @@
                                 <th>Account</th>
                                 <th>Debit</th>
                                 <th>Credit</th>
+                                <!-- NEW: Transaction Hash Column -->
+                                <th>Integrity</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="empty-state-row">
-                                <td colspan="6" class="empty-state">
+                                <td colspan="7" class="empty-state">
                                     <i class="fas fa-book"></i>
                                     <p>No journal entries yet</p>
                                 </td>
@@ -942,7 +1259,7 @@
         </div>
         
         <!-- Ledger Tab -->
-        <div id="ledger" class="tab-content">
+        <div id="ledger" class="tab-content" role="tabpanel" aria-labelledby="ledger-tab">
             <h2>General Ledger</h2>
             
             <div class="filters">
@@ -1003,7 +1320,7 @@
         </div>
         
         <!-- Trial Balance Tab -->
-        <div id="trial-balance" class="tab-content">
+        <div id="trial-balance" class="tab-content" role="tabpanel" aria-labelledby="trial-balance-tab">
             <h2>Trial Balance</h2>
             
             <div class="filters">
@@ -1049,7 +1366,7 @@
         </div>
         
         <!-- Reports Tab -->
-        <div id="reports" class="tab-content">
+        <div id="reports" class="tab-content" role="tabpanel" aria-labelledby="reports-tab">
             <h2>Financial Reports</h2>
             
             <div class="report-options">
@@ -1116,12 +1433,12 @@
         </div>
         
         <!-- Chart of Accounts Tab -->
-        <div id="accounts" class="tab-content">
+        <div id="accounts" class="tab-content" role="tabpanel" aria-labelledby="accounts-tab">
             <h2>Chart of Accounts</h2>
             <button id="add-account-btn" style="margin-bottom: 1.5rem;"><i class="fas fa-plus"></i>Add New Account</button>
             
             <div class="search-box">
-                <input type="text" id="account-search" placeholder="Search accounts...">
+                <input type="text" id="account-search" placeholder="Search accounts..." aria-label="Search accounts">
                 <button id="account-search-btn"><i class="fas fa-search"></i></button>
             </div>
             
@@ -1185,7 +1502,7 @@
         </div>
         
         <!-- Settings Tab -->
-        <div id="settings" class="tab-content">
+        <div id="settings" class="tab-content" role="tabpanel" aria-labelledby="settings-tab">
             <h2>Application Settings</h2>
             
             <div class="card">
@@ -1358,6 +1675,13 @@
                     <textarea id="narration" placeholder="Additional details"></textarea>
                 </div>
                 
+                <!-- NEW: Transaction Hash Display -->
+                <div class="form-group" id="transaction-hash-display" style="display: none;">
+                    <label>Transaction Hash (TrueLedger™):</label>
+                    <div class="transaction-hash" id="transaction-hash-value"></div>
+                    <small>This hash ensures the integrity of your transaction data.</small>
+                </div>
+                
                 <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <strong>Total Debit: <span id="total-debit-amount">$0.00</span></strong>
@@ -1503,7 +1827,7 @@
                 <ul>
                     <li><a href="#">Setting up your accounts</a></li>
                     <li><a href="#">Recording transactions</a></li>
-                    <li><a href Generating financial reports</a></li>
+                    <li><a href="#">Generating financial reports</a></li>
                 </ul>
                 
                 <h3>Need more help?</h3>
@@ -1520,6 +1844,17 @@
     <input type="file" id="restore-file" style="display: none;" accept=".json">
     
     <script>
+        // NEW: Service Worker Registration for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+
         // Main application object
         const OpenLedger = {
             // Application state
@@ -1534,9 +1869,19 @@
             },
             accounts: [],
             transactions: [],
+            ghostTransactions: [], // NEW: ShadowBook™ transactions
             idleTimer: null,
             currentUser: null,
             financialChart: null,
+            
+            // NEW: Innovation features state
+            innovations: {
+                animatedCounters: {},
+                flowViewData: {},
+                ledgerHealth: 0,
+                aiNarrative: '',
+                transactionHashes: {}
+            },
             
             // Initialize the application
             init() {
@@ -1547,6 +1892,9 @@
                 this.updateDashboard();
                 this.setCurrentDate();
                 this.setupIdleTimer();
+                
+                // NEW: Initialize innovation features
+                this.initInnovations();
                 
                 // Add sample accounts if no accounts exist
                 if (this.accounts.length === 0) {
@@ -1562,7 +1910,35 @@
                 }
             },
             
-            // Setup idle timer for auto logout
+            // NEW: Initialize innovation features
+            initInnovations() {
+                this.initAnimatedCounters();
+                this.initFlowView();
+                this.calculateLedgerHealth();
+                this.generateAINarrative();
+                this.calculateTransactionHashes();
+                this.generateGhostTransactions();
+            },
+            
+            // NEW: Initialize animated counters
+            initAnimatedCounters() {
+                this.innovations.animatedCounters = {
+                    assets: 0,
+                    liabilities: 0,
+                    equity: 0,
+                    income: 0
+                };
+            },
+            
+            // NEW: Initialize FlowView™
+            initFlowView() {
+                this.innovations.flowViewData = {
+                    nodes: [],
+                    connections: []
+                };
+            },
+            
+            // NEW: Setup idle timer for auto logout
             setupIdleTimer() {
                 this.resetIdleTimer();
                 
@@ -1614,10 +1990,14 @@
                     const settings = localStorage.getItem('openledger-settings');
                     const accounts = localStorage.getItem('openledger-accounts');
                     const transactions = localStorage.getItem('openledger-transactions');
+                    const ghostTransactions = localStorage.getItem('openledger-ghost-transactions'); // NEW
+                    const innovations = localStorage.getItem('openledger-innovations'); // NEW
                     
                     if (settings) this.settings = JSON.parse(settings);
                     if (accounts) this.accounts = JSON.parse(accounts);
                     if (transactions) this.transactions = JSON.parse(transactions);
+                    if (ghostTransactions) this.ghostTransactions = JSON.parse(ghostTransactions); // NEW
+                    if (innovations) this.innovations = JSON.parse(innovations); // NEW
                     
                     // Update UI with settings
                     document.getElementById('accounting-mode').value = this.settings.accountingMode;
@@ -1639,6 +2019,8 @@
                     localStorage.setItem('openledger-settings', JSON.stringify(this.settings));
                     localStorage.setItem('openledger-accounts', JSON.stringify(this.accounts));
                     localStorage.setItem('openledger-transactions', JSON.stringify(this.transactions));
+                    localStorage.setItem('openledger-ghost-transactions', JSON.stringify(this.ghostTransactions)); // NEW
+                    localStorage.setItem('openledger-innovations', JSON.stringify(this.innovations)); // NEW
                 } catch (e) {
                     console.error('Error saving data to localStorage:', e);
                     this.showNotification('Error saving data', 'error');
@@ -2011,6 +2393,9 @@
                 document.getElementById('total-debit-amount').textContent = this.formatCurrency(0);
                 document.getElementById('total-credit-amount').textContent = this.formatCurrency(0);
                 document.getElementById('transaction-balance-check').style.display = 'none';
+                
+                // NEW: Hide transaction hash display
+                document.getElementById('transaction-hash-display').style.display = 'none';
             },
             
             // Add another entry to the transaction form
@@ -2317,8 +2702,8 @@
                 const searchTerm = document.getElementById('journal-search').value.toLowerCase();
                 
                 // Check if we have transactions
-                if (this.transactions.length === 0) {
-                    journalTable.innerHTML = '<tr class="empty-state-row"><td colspan="6" class="empty-state"><i class="fas fa-book"></i><p>No journal entries yet</p></td></tr>';
+                if (this.transactions.length === 0 && this.ghostTransactions.length === 0) {
+                    journalTable.innerHTML = '<tr class="empty-state-row"><td colspan="7" class="empty-state"><i class="fas fa-book"></i><p>No journal entries yet</p></td></tr>';
                     document.getElementById('journal-pagination').style.display = 'none';
                     return;
                 }
@@ -2340,19 +2725,33 @@
                     return true;
                 });
                 
-                if (filteredTransactions.length === 0) {
-                    journalTable.innerHTML = '<tr class="empty-state-row"><td colspan="6" class="empty-state"><i class="fas fa-search"></i><p>No transactions found for selected filters</p></td></tr>';
+                // NEW: Add ghost transactions (ShadowBook™)
+                let filteredGhostTransactions = this.ghostTransactions.filter(transaction => {
+                    if (dateFrom && transaction.date < dateFrom) return false;
+                    if (dateTo && transaction.date > dateTo) return false;
+                    if (accountFilter && transaction.debitAccount !== accountFilter && transaction.creditAccount !== accountFilter) return false;
+                    if (searchTerm && !transaction.description.toLowerCase().includes(searchTerm) && 
+                        !this.getAccountName(transaction.debitAccount).toLowerCase().includes(searchTerm) && 
+                        !this.getAccountName(transaction.creditAccount).toLowerCase().includes(searchTerm)) return false;
+                    return true;
+                });
+                
+                // Combine regular and ghost transactions
+                const allTransactions = [...filteredTransactions, ...filteredGhostTransactions];
+                
+                if (allTransactions.length === 0) {
+                    journalTable.innerHTML = '<tr class="empty-state-row"><td colspan="7" class="empty-state"><i class="fas fa-search"></i><p>No transactions found for selected filters</p></td></tr>';
                     document.getElementById('journal-pagination').style.display = 'none';
                     return;
                 }
                 
-                // Reverse to show newest first
-                filteredTransactions = filteredTransactions.reverse();
+                // Sort by date (newest first)
+                allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
                 
                 // Pagination setup
                 const pageSize = 10;
                 let currentPage = 1;
-                const totalPages = Math.ceil(filteredTransactions.length / pageSize);
+                const totalPages = Math.ceil(allTransactions.length / pageSize);
                 
                 // Show pagination if needed
                 if (totalPages > 1) {
@@ -2381,17 +2780,28 @@
                 const renderPage = () => {
                     journalTable.innerHTML = '';
                     const startIndex = (currentPage - 1) * pageSize;
-                    const endIndex = Math.min(startIndex + pageSize, filteredTransactions.length);
+                    const endIndex = Math.min(startIndex + pageSize, allTransactions.length);
                     
                     for (let i = startIndex; i < endIndex; i++) {
-                        const transaction = filteredTransactions[i];
+                        const transaction = allTransactions[i];
+                        const isGhost = this.ghostTransactions.includes(transaction);
+                        const hash = this.innovations.transactionHashes[transaction.id] || 'N/A';
+                        
                         const row = document.createElement('tr');
+                        if (isGhost) {
+                            row.className = 'ghost-transaction';
+                        }
+                        
                         row.innerHTML = `
-                            <td>${transaction.date}</td>
+                            <td>${transaction.date} ${isGhost ? '<span class="ghost-badge">Pending</span>' : ''}</td>
                             <td>${transaction.description}</td>
                             <td>${this.getAccountName(transaction.debitAccount)}<br>${this.getAccountName(transaction.creditAccount)}</td>
                             <td class="debit">${this.formatCurrency(transaction.debitAmount)}</td>
                             <td class="credit">${this.formatCurrency(transaction.creditAmount)}</td>
+                            <td>
+                                ${!isGhost ? `<span class="hash-label">TrueLedger™:</span><br>
+                                <span class="transaction-hash" title="${hash}">${hash.substring(0, 16)}...</span>` : 'Pending'}
+                            </td>
                             <td>
                                 <button class="btn-warning" data-transaction-id="${transaction.id}"><i class="fas fa-edit"></i> Edit</button>
                                 <button class="btn-danger" data-transaction-id="${transaction.id}"><i class="fas fa-trash"></i> Delete</button>
@@ -2686,7 +3096,7 @@
                 for (let i = 0; i < journalTable.rows.length; i++) {
                     const row = journalTable.rows[i];
                     let rowText = '';
-                    for (let j = 0; j < row.cells.length - 1; j++) { // Skip actions column
+                    for (let j = 0; j < row.cells.length - 2; j++) { // Skip integrity and actions columns
                         rowText += '"' + row.cells[j].textContent.replace(/"/g, '""') + '",';
                     }
                     csvContent += rowText + '\n';
@@ -3018,6 +3428,9 @@
                     }
                 });
                 
+                // NEW: Calculate and store transaction hash (TrueLedger™)
+                this.calculateTransactionHash(transactionId);
+                
                 // Save data and update UI
                 this.saveData();
                 this.renderTransactions();
@@ -3129,6 +3542,9 @@
                         };
                         
                         this.transactions.push(transaction);
+                        
+                        // NEW: Calculate hash for opening balance transaction
+                        this.calculateTransactionHash(transaction.id);
                     }
                     
                     this.showNotification('Account added successfully', 'success');
@@ -3152,7 +3568,17 @@
             // Delete a transaction
             deleteTransaction(transactionId) {
                 if (confirm('Are you sure you want to delete this transaction?')) {
-                    this.transactions = this.transactions.filter(t => t.id !== transactionId);
+                    // Check if it's a ghost transaction
+                    const isGhost = this.ghostTransactions.some(t => t.id === transactionId);
+                    
+                    if (isGhost) {
+                        this.ghostTransactions = this.ghostTransactions.filter(t => t.id !== transactionId);
+                    } else {
+                        this.transactions = this.transactions.filter(t => t.id !== transactionId);
+                        // NEW: Remove transaction hash
+                        delete this.innovations.transactionHashes[transactionId];
+                    }
+                    
                     this.saveData();
                     this.renderTransactions();
                     this.updateDashboard();
@@ -3207,8 +3633,26 @@
                 const netIncome = revenue - expenses;
                 document.getElementById('net-income').textContent = this.formatCurrency(netIncome);
                 
+                // NEW: Animate counters
+                this.animateCounter('total-assets', totalAssets);
+                this.animateCounter('total-liabilities', totalLiabilities);
+                this.animateCounter('total-equity', equity);
+                this.animateCounter('net-income', netIncome);
+                
+                // NEW: Update financial health background
+                this.updateFinancialHealthBackground(netIncome);
+                
                 // Update financial health chart
                 this.updateFinancialHealthChart(totalAssets, totalLiabilities, equity, netIncome);
+                
+                // NEW: Update FlowView™
+                this.updateFlowView();
+                
+                // NEW: Update Ledger Health Meter
+                this.calculateLedgerHealth();
+                
+                // NEW: Update AI Narrative
+                this.generateAINarrative();
                 
                 // Update recent transactions
                 const recentTransactionsTable = document.getElementById('recent-transactions').querySelector('tbody');
@@ -3217,30 +3661,416 @@
                 const emptyState = recentTransactionsTable.querySelector('.empty-state-row');
                 if (emptyState) emptyState.remove();
                 
-                // Show last 5 transactions
-                const recentTransactions = this.transactions.slice(-5).reverse();
+                // Show last 5 transactions (including ghost transactions)
+                const allTransactions = [...this.transactions, ...this.ghostTransactions];
+                const recentTransactions = allTransactions
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 5);
                 
                 if (recentTransactions.length === 0) {
-                    recentTransactionsTable.innerHTML = '<tr class="empty-state-row"><td colspan="5" class="empty-state"><i class="fas fa-receipt"></i><p>No transactions yet</p></td></tr>';
+                    recentTransactionsTable.innerHTML = '<tr class="empty-state-row"><td colspan="6" class="empty-state"><i class="fas fa-receipt"></i><p>No transactions yet</p></td></tr>';
                     return;
                 }
                 
                 recentTransactionsTable.innerHTML = '';
                 
                 recentTransactions.forEach(transaction => {
+                    const isGhost = this.ghostTransactions.includes(transaction);
+                    const hash = this.innovations.transactionHashes[transaction.id] || 'N/A';
+                    
                     const row = document.createElement('tr');
+                    if (isGhost) {
+                        row.className = 'ghost-transaction';
+                    }
+                    
                     row.innerHTML = `
-                        <td>${transaction.date}</td>
+                        <td>${transaction.date} ${isGhost ? '<span class="ghost-badge">Pending</span>' : ''}</td>
                         <td>${transaction.description}</td>
                         <td>${this.getAccountName(transaction.debitAccount)}<br>${this.getAccountName(transaction.creditAccount)}</td>
                         <td class="debit">${this.formatCurrency(transaction.debitAmount)}</td>
                         <td class="credit">${this.formatCurrency(transaction.creditAmount)}</td>
+                        <td>
+                            ${!isGhost ? `<span class="hash-label">Hash:</span><br>
+                            <span class="transaction-hash" title="${hash}">${hash.substring(0, 10)}...</span>` : 'Pending'}
+                        </td>
                     `;
                     recentTransactionsTable.appendChild(row);
                 });
                 
                 // Update recent activity
                 this.updateRecentActivity();
+            },
+            
+            // NEW: Animate counter values
+            animateCounter(elementId, targetValue) {
+                const element = document.getElementById(elementId);
+                const currentValue = this.parseCurrency(element.textContent);
+                const duration = 1000; // 1 second
+                const steps = 60;
+                const stepValue = (targetValue - currentValue) / steps;
+                let currentStep = 0;
+                
+                const counter = setInterval(() => {
+                    currentStep++;
+                    const newValue = currentValue + (stepValue * currentStep);
+                    element.textContent = this.formatCurrency(newValue);
+                    
+                    if (currentStep >= steps) {
+                        element.textContent = this.formatCurrency(targetValue);
+                        clearInterval(counter);
+                    }
+                }, duration / steps);
+            },
+            
+            // NEW: Parse currency value from string
+            parseCurrency(currencyString) {
+                return parseFloat(currencyString.replace(/[^0-9.-]+/g, ''));
+            },
+            
+            // NEW: Update financial health background
+            updateFinancialHealthBackground(netIncome) {
+                if (netIncome > 0) {
+                    document.body.classList.add('positive-health');
+                    document.body.classList.remove('negative-health');
+                } else if (netIncome < 0) {
+                    document.body.classList.add('negative-health');
+                    document.body.classList.remove('positive-health');
+                } else {
+                    document.body.classList.remove('positive-health', 'negative-health');
+                }
+            },
+            
+            // NEW: Update FlowView™ visualization
+            updateFlowView() {
+                const svg = document.getElementById('flow-view-svg');
+                svg.innerHTML = '<defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#4361ee" /></marker></defs>';
+                
+                // Clear previous data
+                this.innovations.flowViewData.nodes = [];
+                this.innovations.flowViewData.connections = [];
+                
+                // Create nodes for top 5 accounts by balance
+                const topAccounts = this.accounts
+                    .map(account => ({
+                        ...account,
+                        balance: Math.abs(this.getAccountBalance(account.id))
+                    }))
+                    .sort((a, b) => b.balance - a.balance)
+                    .slice(0, 5);
+                
+                // Add nodes to flow view
+                topAccounts.forEach((account, index) => {
+                    const node = {
+                        id: account.id,
+                        name: account.name,
+                        type: account.type,
+                        balance: account.balance,
+                        x: 100 + (index * 200),
+                        y: 150,
+                        radius: 30 + (account.balance / Math.max(...topAccounts.map(a => a.balance)) * 20)
+                    };
+                    this.innovations.flowViewData.nodes.push(node);
+                    
+                    // Draw node
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', node.x);
+                    circle.setAttribute('cy', node.y);
+                    circle.setAttribute('r', node.radius);
+                    circle.setAttribute('class', 'flow-node');
+                    circle.setAttribute('fill', this.getAccountColor(account.type));
+                    circle.setAttribute('stroke', '#fff');
+                    circle.setAttribute('stroke-width', '2');
+                    svg.appendChild(circle);
+                    
+                    // Add account name
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', node.x);
+                    text.setAttribute('y', node.y + 5);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('fill', '#fff');
+                    text.setAttribute('font-size', '12');
+                    text.setAttribute('font-weight', 'bold');
+                    text.textContent = account.name.substring(0, 10) + (account.name.length > 10 ? '...' : '');
+                    svg.appendChild(text);
+                    
+                    // Add balance
+                    const balanceText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    balanceText.setAttribute('x', node.x);
+                    balanceText.setAttribute('y', node.y + 25);
+                    balanceText.setAttribute('text-anchor', 'middle');
+                    balanceText.setAttribute('fill', '#fff');
+                    balanceText.setAttribute('font-size', '10');
+                    balanceText.textContent = this.formatCurrency(account.balance).substring(0, 10);
+                    svg.appendChild(balanceText);
+                });
+                
+                // Create connections based on recent transactions
+                const recentTransactions = this.transactions.slice(-10);
+                recentTransactions.forEach(transaction => {
+                    const fromNode = this.innovations.flowViewData.nodes.find(node => node.id === transaction.debitAccount);
+                    const toNode = this.innovations.flowViewData.nodes.find(node => node.id === transaction.creditAccount);
+                    
+                    if (fromNode && toNode) {
+                        const connection = {
+                            from: fromNode.id,
+                            to: toNode.id,
+                            amount: transaction.debitAmount
+                        };
+                        this.innovations.flowViewData.connections.push(connection);
+                        
+                        // Draw connection
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', fromNode.x);
+                        line.setAttribute('y1', fromNode.y);
+                        line.setAttribute('x2', toNode.x);
+                        line.setAttribute('y2', toNode.y);
+                        line.setAttribute('class', 'flow-connection');
+                        line.setAttribute('stroke-width', Math.min(5, Math.max(1, transaction.debitAmount / 100)));
+                        svg.appendChild(line);
+                    }
+                });
+            },
+            
+            // NEW: Get account color based on type
+            getAccountColor(type) {
+                const colors = {
+                    'Asset': '#3498db',
+                    'Liability': '#e74c3c',
+                    'Equity': '#2ecc71',
+                    'Revenue': '#f39c12',
+                    'Expense': '#9b59b6'
+                };
+                return colors[type] || '#95a5a6';
+            },
+            
+            // NEW: Calculate ledger health
+            calculateLedgerHealth() {
+                // Calculate balance accuracy (how well debits and credits match)
+                let totalDebit = 0;
+                let totalCredit = 0;
+                
+                this.transactions.forEach(transaction => {
+                    totalDebit += transaction.debitAmount;
+                    totalCredit += transaction.creditAmount;
+                });
+                
+                const balanceAccuracy = Math.min(100, (1 - Math.abs(totalDebit - totalCredit) / Math.max(totalDebit, totalCredit)) * 100);
+                
+                // Calculate transaction volume health
+                const transactionCount = this.transactions.length;
+                const transactionHealth = Math.min(100, transactionCount / 10 * 100);
+                
+                // Calculate account diversity health
+                const accountCount = this.accounts.length;
+                const accountHealth = Math.min(100, accountCount / 5 * 100);
+                
+                // Overall health (weighted average)
+                const overallHealth = (balanceAccuracy * 0.5) + (transactionHealth * 0.3) + (accountHealth * 0.2);
+                
+                this.innovations.ledgerHealth = Math.round(overallHealth);
+                
+                // Update UI
+                const progressCircle = document.getElementById('health-meter-progress');
+                const valueDisplay = document.getElementById('health-meter-value');
+                const labelDisplay = document.getElementById('health-meter-label');
+                
+                const circumference = 2 * Math.PI * 54;
+                const offset = circumference - (this.innovations.ledgerHealth / 100) * circumference;
+                
+                progressCircle.style.strokeDashoffset = offset;
+                valueDisplay.textContent = `${this.innovations.ledgerHealth}%`;
+                
+                // Set color based on health
+                if (this.innovations.ledgerHealth >= 80) {
+                    progressCircle.style.stroke = '#2ecc71'; // Green
+                    labelDisplay.textContent = 'Excellent ledger health';
+                } else if (this.innovations.ledgerHealth >= 60) {
+                    progressCircle.style.stroke = '#f39c12'; // Orange
+                    labelDisplay.textContent = 'Good ledger health';
+                } else {
+                    progressCircle.style.stroke = '#e74c3c'; // Red
+                    labelDisplay.textContent = 'Needs attention';
+                }
+            },
+            
+            // NEW: Generate AI narrative insight
+            generateAINarrative() {
+                const totalAssets = this.calculateAccountTypeTotal('Asset');
+                const totalLiabilities = this.calculateAccountTypeTotal('Liability');
+                const equity = this.calculateAccountTypeTotal('Equity');
+                const revenue = this.calculateAccountTypeTotal('Revenue');
+                const expenses = this.calculateAccountTypeTotal('Expense');
+                const netIncome = revenue - expenses;
+                
+                let narrative = '';
+                
+                if (this.transactions.length === 0) {
+                    narrative = "Welcome to OpenLedger! Start by adding your accounts and recording transactions to see financial insights here.";
+                } else if (netIncome > 0) {
+                    narrative = `Your business is profitable with a net income of ${this.formatCurrency(netIncome)}. `;
+                    
+                    if (totalAssets > totalLiabilities) {
+                        narrative += `Your assets exceed liabilities by ${this.formatCurrency(totalAssets - totalLiabilities)}, indicating strong financial health.`;
+                    } else {
+                        narrative += `However, your liabilities exceed assets by ${this.formatCurrency(totalLiabilities - totalAssets)}, which may need attention.`;
+                    }
+                } else if (netIncome < 0) {
+                    narrative = `Your business is operating at a loss of ${this.formatCurrency(Math.abs(netIncome))}. `;
+                    
+                    if (expenses > revenue * 2) {
+                        narrative += "Consider reviewing your expenses as they are significantly higher than your revenue.";
+                    } else {
+                        narrative += "Focus on increasing revenue or reducing expenses to reach profitability.";
+                    }
+                } else {
+                    narrative = "Your business is breaking even. Look for opportunities to increase revenue or optimize expenses.";
+                }
+                
+                // Add transaction trend
+                const recentTransactionCount = this.transactions.filter(t => {
+                    const transactionDate = new Date(t.date);
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                    return transactionDate > thirtyDaysAgo;
+                }).length;
+                
+                if (recentTransactionCount > 10) {
+                    narrative += " You've been actively recording transactions recently.";
+                }
+                
+                this.innovations.aiNarrative = narrative;
+                document.getElementById('ai-narrative-text').textContent = narrative;
+            },
+            
+            // NEW: Calculate transaction hash (TrueLedger™)
+            calculateTransactionHash(transactionId) {
+                const transaction = this.transactions.find(t => t.id === transactionId);
+                if (!transaction) return;
+                
+                const hashData = {
+                    id: transaction.id,
+                    date: transaction.date,
+                    description: transaction.description,
+                    debitAccount: transaction.debitAccount,
+                    debitAmount: transaction.debitAmount,
+                    creditAccount: transaction.creditAccount,
+                    creditAmount: transaction.creditAmount,
+                    reference: transaction.reference,
+                    narration: transaction.narration,
+                    createdAt: transaction.createdAt
+                };
+                
+                const hashString = JSON.stringify(hashData);
+                const hash = CryptoJS.SHA256(hashString).toString(CryptoJS.enc.Hex);
+                
+                this.innovations.transactionHashes[transactionId] = hash;
+                
+                // Show hash in transaction modal if it's open
+                const hashDisplay = document.getElementById('transaction-hash-display');
+                const hashValue = document.getElementById('transaction-hash-value');
+                
+                if (hashDisplay && hashValue) {
+                    hashDisplay.style.display = 'block';
+                    hashValue.textContent = hash;
+                }
+            },
+            
+            // NEW: Calculate hashes for all transactions
+            calculateTransactionHashes() {
+                this.transactions.forEach(transaction => {
+                    if (!this.innovations.transactionHashes[transaction.id]) {
+                        this.calculateTransactionHash(transaction.id);
+                    }
+                });
+            },
+            
+            // NEW: Generate ghost transactions (ShadowBook™)
+            generateGhostTransactions() {
+                // Clear existing ghost transactions
+                this.ghostTransactions = [];
+                
+                // Look for patterns in existing transactions to predict future ones
+                const recurringPatterns = this.identifyRecurringPatterns();
+                
+                // Generate ghost transactions based on patterns
+                recurringPatterns.forEach(pattern => {
+                    const ghostTransaction = {
+                        id: 'ghost-' + Date.now() + Math.random(),
+                        date: new Date(new Date().setDate(new Date().getDate() + pattern.daysUntilNext)).toISOString().split('T')[0],
+                        description: pattern.description + ' (Predicted)',
+                        debitAccount: pattern.debitAccount,
+                        debitAmount: pattern.averageAmount,
+                        creditAccount: pattern.creditAccount,
+                        creditAmount: pattern.averageAmount,
+                        reference: 'PREDICTED',
+                        narration: 'AI-predicted transaction based on historical patterns',
+                        createdAt: new Date().toISOString(),
+                        isGhost: true
+                    };
+                    
+                    this.ghostTransactions.push(ghostTransaction);
+                });
+                
+                this.saveData();
+            },
+            
+            // NEW: Identify recurring transaction patterns
+            identifyRecurringPatterns() {
+                const patterns = [];
+                
+                // Group transactions by description and accounts
+                const transactionGroups = {};
+                
+                this.transactions.forEach(transaction => {
+                    const key = `${transaction.description}-${transaction.debitAccount}-${transaction.creditAccount}`;
+                    
+                    if (!transactionGroups[key]) {
+                        transactionGroups[key] = [];
+                    }
+                    
+                    transactionGroups[key].push(transaction);
+                });
+                
+                // Analyze groups for patterns
+                for (const key in transactionGroups) {
+                    const group = transactionGroups[key];
+                    
+                    if (group.length >= 3) { // Need at least 3 occurrences to establish a pattern
+                        // Calculate average amount
+                        const totalAmount = group.reduce((sum, t) => sum + t.debitAmount, 0);
+                        const averageAmount = totalAmount / group.length;
+                        
+                        // Calculate average days between occurrences
+                        const dates = group.map(t => new Date(t.date)).sort((a, b) => a - b);
+                        let totalDaysBetween = 0;
+                        
+                        for (let i = 1; i < dates.length; i++) {
+                            const daysBetween = (dates[i] - dates[i-1]) / (1000 * 60 * 60 * 24);
+                            totalDaysBetween += daysBetween;
+                        }
+                        
+                        const averageDaysBetween = totalDaysBetween / (dates.length - 1);
+                        
+                        // If transactions occur regularly (within 5 days of average)
+                        const isRegular = group.every((t, i) => {
+                            if (i === 0) return true;
+                            const daysBetween = (new Date(t.date) - new Date(group[i-1].date)) / (1000 * 60 * 60 * 24);
+                            return Math.abs(daysBetween - averageDaysBetween) <= 5;
+                        });
+                        
+                        if (isRegular && averageDaysBetween <= 90) { // Regular pattern within 3 months
+                            patterns.push({
+                                description: group[0].description,
+                                debitAccount: group[0].debitAccount,
+                                creditAccount: group[0].creditAccount,
+                                averageAmount: averageAmount,
+                                daysUntilNext: Math.round(averageDaysBetween)
+                            });
+                        }
+                    }
+                }
+                
+                return patterns;
             },
             
             // Update financial health chart
@@ -3329,6 +4159,8 @@
                     settings: this.settings,
                     accounts: this.accounts,
                     transactions: this.transactions,
+                    ghostTransactions: this.ghostTransactions,
+                    innovations: this.innovations,
                     exportDate: new Date().toISOString(),
                     version: '1.2.0'
                 };
@@ -3368,6 +4200,8 @@
                             if (data.settings) this.settings = data.settings;
                             if (data.accounts) this.accounts = data.accounts;
                             if (data.transactions) this.transactions = data.transactions;
+                            if (data.ghostTransactions) this.ghostTransactions = data.ghostTransactions;
+                            if (data.innovations) this.innovations = data.innovations;
                             
                             this.saveData();
                             this.renderAccounts();
@@ -3415,6 +4249,8 @@
                             if (data.settings) this.settings = data.settings;
                             if (data.accounts) this.accounts = data.accounts;
                             if (data.transactions) this.transactions = data.transactions;
+                            if (data.ghostTransactions) this.ghostTransactions = data.ghostTransactions;
+                            if (data.innovations) this.innovations = data.innovations;
                             
                             this.saveData();
                             this.renderAccounts();
@@ -3463,6 +4299,14 @@
                     };
                     this.accounts = [];
                     this.transactions = [];
+                    this.ghostTransactions = [];
+                    this.innovations = {
+                        animatedCounters: {},
+                        flowViewData: {},
+                        ledgerHealth: 0,
+                        aiNarrative: '',
+                        transactionHashes: {}
+                    };
                     this.saveData();
                     this.renderAccounts();
                     this.renderTransactions();
@@ -3547,6 +4391,15 @@
                     
                     this.accounts = sampleAccounts;
                     this.transactions = sampleTransactions;
+                    
+                    // NEW: Calculate transaction hashes for sample data
+                    this.transactions.forEach(transaction => {
+                        this.calculateTransactionHash(transaction.id);
+                    });
+                    
+                    // NEW: Generate ghost transactions
+                    this.generateGhostTransactions();
+                    
                     this.saveData();
                     this.renderAccounts();
                     this.renderTransactions();
